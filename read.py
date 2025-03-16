@@ -1,4 +1,3 @@
-import cv2
 import pytesseract
 import pandas as pd
 from PIL import Image
@@ -7,6 +6,7 @@ import time
 import os
 import win32clipboard
 from io import BytesIO
+
 pytesseract.pytesseract.tesseract_cmd = r'G:\tesseract\tesseract.exe'
 
 
@@ -83,18 +83,18 @@ def processTableRows(cropFunction, img):
 def nameCrop(i, img):
 
     img1 = img.crop((0, i, name_width, i+row_height))
-    img1.save(f"row{i}.png")
+    # img1.save(f"row{i}.png")
 
     # Crop the name area from row{i}.png
-    img2 = Image.open(f"row{i}.png")
-    img2 = img2.crop((row_height-1, 0, name_crop_width, row_height-22))
-    img2.save(f"name{i}.png")
+    # img2 = Image.open(f"row{i}.png")
+    img2 = img1.crop((row_height-1, 0, name_crop_width, row_height-22))
+    # img2.save(f"name{i}.png")
     ocrd = ocr_core(img2)
 
     if len(re.sub(r'\W+', '', ocrd)) <= 2:
         # Expand crop area if OCR result is too short
         img2 = img2.crop((0, 0, name_crop_width, row_height-22+10))
-        img2.save(f"name{i}.png")
+        # img2.save(f"name{i}.png")
         ocrd = ocr_core(img2)
 
     return ocrd 
@@ -102,7 +102,7 @@ def nameCrop(i, img):
 
 def lowestPrice(i, img):
     img1 = img.crop((lowest_price_width, i, lowest_price_crop_width, i+row_height))
-    img1.save(f"row{i}.png")
+    # img1.save(f"row{i}.png")
 
     ocrd = ocr_core(img1, type='number_decimal')
 
@@ -111,7 +111,7 @@ def lowestPrice(i, img):
 
 def recentPrice(i, img):
     img1 = img.crop((lowest_price_width-price_width, i, lowest_price_crop_width-price_width, i+row_height))
-    img1.save(f"row{i}.png")
+    # img1.save(f"row{i}.png")
 
     ocrd = ocr_core(img1, type='number_decimal')
 
@@ -208,7 +208,8 @@ def listen_to_print_screen():
 
 
 # Start listening to the screenshots directory
-listen_to_print_screen()
+if __name__ == "__main__":
+    listen_to_print_screen()
 
 
 

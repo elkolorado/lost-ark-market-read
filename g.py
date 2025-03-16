@@ -12,7 +12,6 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = "1lIAdR685J_SS2Mz2KYtjUs8EK70Wg_6scVpmGWIY5cE"
-SAMPLE_RANGE_NAME = "Arkusz1!C5:E"
 
 
 def update_spreadsheet_from_csv(spreadsheet_id=SAMPLE_SPREADSHEET_ID, range_name="market_ocr!A1", csv_file_path="output.csv", credentials_file="credentials.json", token_file="token.json"):
@@ -42,6 +41,13 @@ def update_spreadsheet_from_csv(spreadsheet_id=SAMPLE_SPREADSHEET_ID, range_name
         body = {
             "values": data
         }
+
+        # Clear the existing data in the spreadsheet
+        sheet.values().clear(
+            spreadsheetId=spreadsheet_id,
+            range="market_ocr!A1:C",
+            body={}
+        ).execute()
 
         result = sheet.values().update(
             spreadsheetId=spreadsheet_id,
