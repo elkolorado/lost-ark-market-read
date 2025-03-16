@@ -207,9 +207,45 @@ def listen_to_print_screen():
         time.sleep(1)  # Check the clipboard every second
 
 
+
+#instead we will listen to screenshots and process them
+def listen_to_screenshot_folder(folder_path):
+    """
+    Listen for new files created in the specified folder and process them.
+    """
+    print(f"Listening for new screenshots in folder: {folder_path}")
+
+    processed_files = set()  # Keep track of already processed files
+
+    while True:
+        try:
+            # Get the list of files in the folder
+            files = os.listdir(folder_path)
+            for file in files:
+                file_path = os.path.join(folder_path, file)
+
+                # Check if the file is a new image and hasn't been processed yet
+                if file_path.endswith(('.png', '.jpg', '.jpeg')) and file_path not in processed_files:
+                    processed_files.add(file_path)  # Mark the file as processed
+                    print(f"Processing new screenshot: {file_path}")
+                    processScreen(file_path)  # Pass the file path to processScreen
+                    update_spreadsheet_from_csv()  # Update the Google Sheets spreadsheet
+
+        except Exception as e:
+            print(f"Error processing screenshot folder: {e}")
+
+        time.sleep(1)  # Check the folder every second
+
+
 # Start listening to the screenshots directory
 if __name__ == "__main__":
-    listen_to_print_screen()
+    screenshot_folder = r"D:\SteamLibrary\steamapps\common\Lost Ark\EFGame\Screenshots"
+    listen_to_screenshot_folder(screenshot_folder)
+
+
+# # Start listening to the screenshots directory
+# if __name__ == "__main__":
+#     listen_to_print_screen()
 
 
 
